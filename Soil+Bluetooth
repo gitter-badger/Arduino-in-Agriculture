@@ -1,0 +1,110 @@
+float maxTemp = 30.0; 
+int maxTempSensor = (int) ((maxTemp / 100 + .5) * 204.8);
+float temperature = 0.0;
+
+int maxSeconds = 10; 
+
+const int ledPin = 13;   
+const int tempPin = A0;  
+
+const int led1Pin = 3; 
+const int led2Pin = 4; 
+const int led3Pin = 5; 
+
+volatile int tempVal;
+volatile int seconds = 0;
+volatile boolean tempHigh = false;
+volatile boolean statusReport = false;
+
+String inputString = "";
+String command = "";
+String value = "";
+boolean stringComplete = false;
+
+void setup(){
+  //start serial connection
+  Serial.begin(9608);
+  Serial.print("Max T: ");
+  Serial.print(maxTemp);
+  Serial.print(" Sensor: ");
+  Serial.println(maxTempSensor);
+
+  inputString.reserve(50);
+  command.reserve(50);
+  value.reserve(50);
+  
+  pinMode(ledPin, OUTPUT); 
+  digitalWrite(ledPin, LOW);
+  
+  pinMode(led1Pin, OUTPUT); 
+  pinMode(led2Pin, OUTPUT); 
+  pinmode(led3Pin, OUTPUT); 
+  digitalWrite(led1Pin, LOW);
+  digitalWrite(led2Pin, LOW);
+  digitalWrite(led3Pin, LOW);
+ISR(TIMER1_COMPA_vect)
+{
+  tempVal = analogRead(tempPin);
+  
+  if (tempVal > maxTempSensor) {
+    digitalWrite(ledPin, HIGH);
+    tempHigh = true;
+  }
+  else {
+    digitalWrite(ledPin, LOW);
+    tempHigh = false;
+  }
+
+  if (seconds++ >= maxSeconds) {
+    statusReport = true;
+    seconds = 0;
+  }
+}
+ISR(TIMER1_COMPA_vect)
+{
+  tempVal = analogRead(tempPin);
+  
+  if (tempVal > maxTempSensor) {
+    digitalWrite(ledPin, HIGH);
+    tempHigh = true;
+  }
+  else {
+    digitalWrite(ledPin, LOW);
+    tempHigh = false;
+  }
+
+  if (seconds++ >= maxSeconds) {
+    statusReport = true;
+    seconds = 0;
+  }
+}
+ISR(TIMER1_COMPA_vect)
+{
+  tempVal = analogread(tempPin);
+  
+  if (tempVal > maxTempSensor) {
+    digitalWrite(ledPin, HIGH);
+    tempHigh = true;
+  }
+  else {
+    digitalWrite(ledPin, LOW);
+    tempHigh = false;
+  }
+
+  if (seconds++ >= maxSeconds) {
+    statusReport = true;
+    seconds = 0;
+  }
+}
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read(); 
+    //Serial.write(inChar);
+    // add it to the inputString:
+    inputString 
+ if (inChar == '\n' || inChar == '\r') {
+      stringComplete = true;
+    } 
+  }
+}
